@@ -10,10 +10,14 @@ namespace UtilityBelt.Collections
     /// <summary>
     /// A caching collection that can serve multiple enumerators 
     /// while new items are added.
+    /// Enumeration of this collection will eventually block until
+    /// the add operation is finished using the control interface.
     /// </summary>
     /// <typeparam name="T">The data type</typeparam>
     public class CachingStreamingCollection<T> : IEnumerable<T>
     {
+        // TODO: Allow more than one interface; The collection is considered "closed" when no reader is open and will block if so
+
         /// <summary>
         /// The data store
         /// </summary>
@@ -181,6 +185,7 @@ namespace UtilityBelt.Collections
             try
             {
                 // if the stream is already closed, just pump out the values
+                // TODO: yield unter full read lock!
                 if (_streamClosed) { foreach (var item in dataList) { yield return item; } yield break; } 
 
                 LinkedListNode<T> nextToken;
@@ -193,6 +198,7 @@ namespace UtilityBelt.Collections
                 if (token == null)
                 {
                     readerLock.WaitOne();
+                    // TODO: yield unter full read lock!
                     if (_streamClosed) { foreach (var item in dataList) { yield return item; } yield break; }
 
                     // At this point, the first element has data
