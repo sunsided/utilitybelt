@@ -18,7 +18,7 @@ namespace UtilityBelt.Tests
             Assert.That(collection.AddingDone, Is.False);
 
             // Add a couple of data
-            using(var adder = collection.BeginAdd())
+            using(var adder = collection.BeginAdding())
             {
                 adder.Add(1);
                 adder.Add(2, 3);
@@ -49,7 +49,7 @@ namespace UtilityBelt.Tests
         public void AddAfterCloseFails()
         {
             var collection = new CachingStreamingCollection<int>();
-            using (var adder = collection.BeginAdd())
+            using (var adder = collection.BeginAdding())
             {
                 adder.Add(1);
                 adder.Finish();
@@ -68,7 +68,7 @@ namespace UtilityBelt.Tests
             // Add a couple of data
             Task.Factory.StartNew(() =>
                                       {
-                                          using (var adder = collection.BeginAdd())
+                                          using (var adder = collection.BeginAdding())
                                           {
                                               for (int i = 0; i < count; i++)
                                               {
