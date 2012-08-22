@@ -1,0 +1,7 @@
+packages/*
+!packages/repositories.config
+*.user
+*.suo
+_ReSharper*
+bin
+obj

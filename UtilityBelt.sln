@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityBelt", "UtilityBelt\UtilityBelt.csproj", "{76DDDA54-2733-4EF8-BE5D-17DCABA3F316}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityBelt Tests", "UtilityBelt Tests\UtilityBelt Tests.csproj", "{14611D5B-EC0F-411A-91C9-2BC1F075306A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76DDDA54-2733-4EF8-BE5D-17DCABA3F316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76DDDA54-2733-4EF8-BE5D-17DCABA3F316}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76DDDA54-2733-4EF8-BE5D-17DCABA3F316}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76DDDA54-2733-4EF8-BE5D-17DCABA3F316}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14611D5B-EC0F-411A-91C9-2BC1F075306A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14611D5B-EC0F-411A-91C9-2BC1F075306A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14611D5B-EC0F-411A-91C9-2BC1F075306A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14611D5B-EC0F-411A-91C9-2BC1F075306A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
