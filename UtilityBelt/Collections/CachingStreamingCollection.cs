@@ -56,11 +56,65 @@ namespace UtilityBelt.Collections
         private readonly Collection<AutoResetEvent> _readerLocks = new Collection<AutoResetEvent>();
 
         /// <summary>
+        /// The collection of currently active data appenders
+        /// </summary>
+        private readonly Collection<IStreamingDataAppender<T>> _dataAppenders = new Collection<IStreamingDataAppender<T>>();
+
+        /// <summary>
         /// Determines whether the collection contains any data
         /// </summary>
         public bool HasData
         {
             get { return ReadFirstLocked(_dataList, _dataLock) != null; }
+        }
+        
+        #region Write Operation
+
+        /// <summary>
+        /// Retrieves an interface to add elements to this collection
+        /// </summary>
+        /// <returns>The adding interface</returns>
+        public IStreamingDataAppender<T> BeginAdding()
+        {
+            Contract.Ensures(Contract.Result<IStreamingDataAppender<T>>() != null);
+            var appender = new DataAppender(this);
+            lock (_dataAppenders) _dataAppenders.Add(appender);
+            return appender;
+        }
+
+        /// <summary>
+        /// Closes the stream.
+        /// </summary>
+        private void CloseStream(IStreamingDataAppender<T> appender)
+        {
+            if (_streamClosed) return;
+
+            _dataLock.EnterWriteLock();
+            try
+            {
+                _streamClosed = true;
+                _closeEvent.Set();
+            }
+            finally
+            {
+                _dataLock.ExitWriteLock();
+            }
+
+            PulseIterators();
+        }
+
+        /// <summary>
+        /// Pulses the iterators so they continue to serve data
+        /// </summary>
+        private void PulseIterators()
+        {
+            lock (_readerLocks)
+            {
+                foreach (var readerLock in _readerLocks)
+                {
+                    readerLock.Set();
+                }
+            }
         }
 
         /// <summary>
@@ -122,50 +176,9 @@ namespace UtilityBelt.Collections
             PulseIterators();
         }
 
-        /// <summary>
-        /// Closes the stream.
-        /// </summary>
-        private void CloseStream()
-        {
-            if (_streamClosed) return;
+        #endregion
 
-            _dataLock.EnterWriteLock();
-            try
-            {
-                _streamClosed = true;
-                _closeEvent.Set();
-            }
-            finally
-            {
-                _dataLock.ExitWriteLock();
-            }
-
-            PulseIterators();
-        }
-
-        /// <summary>
-        /// Pulses the iterators so they continue to serve data
-        /// </summary>
-        private void PulseIterators()
-        {
-            lock (_readerLocks)
-            {
-                foreach (var readerLock in _readerLocks)
-                {
-                    readerLock.Set();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Retrieves an interface to add elements to this collection
-        /// </summary>
-        /// <returns>The adding interface</returns>
-        public IStreamingDataAppender<T> BeginAdding()
-        {
-            Contract.Ensures(Contract.Result<IStreamingDataAppender<T>>() != null);
-            return new DataAppender(this);
-        }
+        #region Read Operations
 
         /// <summary>
         /// Gets the enumerator.
@@ -286,6 +299,10 @@ namespace UtilityBelt.Collections
             return GetEnumerator();
         }
 
+        #endregion Read Operations
+
+        #region class DataAppender
+
         /// <summary>
         /// Concrete data appender instance
         /// </summary>
@@ -344,8 +361,10 @@ namespace UtilityBelt.Collections
             /// </summary>
             public void Finish()
             {
-                _parent.CloseStream();
+                _parent.CloseStream(this);
             }
         }
+
+        #endregion class DataAppender
     }
 }
