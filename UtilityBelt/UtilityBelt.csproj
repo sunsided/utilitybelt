@@ -72,6 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\CachingEnumerable.cs" />
     <Compile Include="Collections\CachingStreamingCollection.cs" />
     <Compile Include="Collections\IStreamingDataAppender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
