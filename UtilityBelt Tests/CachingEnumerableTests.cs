@@ -21,7 +21,7 @@ namespace UtilityBelt.Tests
             const string testString = "CachingEnumerable<T> works just as expected";
             
             // get the cache
-            var enumerable = new CachingEnumerable<char>(testString);
+            var enumerable = testString.GetCachingEnumerator();
 
             for (int i = 0; i < 2; ++i)
             {
@@ -46,7 +46,7 @@ namespace UtilityBelt.Tests
             const string testString = "CachingEnumerable<T> works just as expected";
 
             // get the cache
-            var enumerable = new CachingEnumerable<char>(testString);
+            var enumerable = testString.GetCachingEnumerator();
 
             // formulate function under test
             ManualResetEvent startSignal = new ManualResetEvent(false);
