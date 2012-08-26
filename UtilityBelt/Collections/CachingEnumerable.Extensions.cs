@@ -17,7 +17,7 @@ namespace UtilityBelt.Collections
         public static IEnumerable<T> GetCachingEnumerator<T>(this IEnumerable<T> source)
         {
             Contract.Requires(source != null);
-            Contract.Ensures(Contract.Result<CachingEnumerable<T>>() != null);
+            Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
             return new CachingEnumerable<T>(source);
         }
     }

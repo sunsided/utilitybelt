@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Threading;
 
@@ -109,12 +108,11 @@ namespace UtilityBelt.Collections
                         }
                         else if (current.Next != null)
                         {
-                            // if the current token now has a follwer, return that value
+                            // if the current token now has a follower, return that value
                             return current.Next;
                         }
 
                         // request a new value
-                        Trace.WriteLine(Thread.CurrentThread.ManagedThreadId + ": requesting new value ...");
                         if (RequestFromParentAndAddToCache())
                         {
                             // request succeeded, so there is one additional value in the cache
@@ -122,7 +120,6 @@ namespace UtilityBelt.Collections
                         }
 
                         // request failed, so there is no next value
-                        Trace.WriteLine(Thread.CurrentThread.ManagedThreadId + ": reached end of queue.");
                         return null;
                     }
                     finally
@@ -132,7 +129,6 @@ namespace UtilityBelt.Collections
                 }
 
                 // At this point, there are follow-up values in the cache, so we just return the next one
-                Trace.WriteLine(Thread.CurrentThread.ManagedThreadId + ": serving from cache ...");
                 return current.Next;
             }
             finally
@@ -163,7 +159,7 @@ namespace UtilityBelt.Collections
         /// <returns>The enumerator</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            Contract.Ensures(Contract.Result<IEnumerator<T>>() != null);
+            Contract.Ensures(Contract.Result<IEnumerator>() != null);
             return GetEnumerator();
         }
     }
