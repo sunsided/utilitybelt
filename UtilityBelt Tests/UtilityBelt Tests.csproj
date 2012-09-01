@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\CachingEnumerableTests.cs" />
+    <Compile Include="Globalization\NaturalStringComparerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Versioning\SemanticVersionTests.cs" />
   </ItemGroup>

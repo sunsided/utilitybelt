@@ -69,6 +69,8 @@
   <ItemGroup>
     <Compile Include="Collections\CachingEnumerable.cs" />
     <Compile Include="Collections\CachingEnumerable.Extensions.cs" />
+    <Compile Include="Comparer\EnumerableComparer.cs" />
+    <Compile Include="Globalization\NaturalStringComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Versioning\AssemblySemanticVersionAttribute.cs" />
     <Compile Include="Versioning\SemanticVersion.cs" />
