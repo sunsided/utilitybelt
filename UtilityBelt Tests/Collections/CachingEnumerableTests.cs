@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using UtilityBelt.Collections;
 
-namespace UtilityBelt.Tests
+namespace UtilityBelt.Tests.Collections
 {
+    /// <summary>
+    /// Tests for the <see cref="CachingEnumerable{T}"/> type
+    /// </summary>
     [TestFixture]
     public class CachingEnumerableTests
     {
@@ -24,7 +27,7 @@ namespace UtilityBelt.Tests
             for (int i = 0; i < 2; ++i)
             {
                 // enumerate
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
                 foreach (var item in enumerable)
                 {
                     builder.Append(item);
@@ -47,17 +50,17 @@ namespace UtilityBelt.Tests
             var enumerable = testString.GetCachingEnumerator();
 
             // formulate function under test
-            ManualResetEvent startSignal = new ManualResetEvent(false);
+            var startSignal = new ManualResetEvent(false);
             Func<string> enumerationFunc = () =>
                 {
                     // block until test is ready
                     startSignal.WaitOne();
 
                     // Randomize sleep
-                    Random random = new Random();
+                    var random = new Random();
 
                     // enumerate
-                    StringBuilder builder = new StringBuilder();
+                    var builder = new StringBuilder();
                     foreach (var item in enumerable)
                     {
                         builder.Append(item);
@@ -69,14 +72,14 @@ namespace UtilityBelt.Tests
 
             // run multiple tasks and wait for join
             const int count = 5;
-            Task<string>[] tasks = new Task<string>[count];
+            var tasks = new Task<string>[count];
             for (int i=0; i<count; ++i)
             {
                 tasks[i] = Task<string>.Factory.StartNew(enumerationFunc, TaskCreationOptions.LongRunning);
             }
 
             startSignal.Set();
-            Task.WaitAll(tasks);
+            Assert.That(Task.WaitAll(tasks, TimeSpan.FromSeconds(60)), Is.True);
 
             // compare
             foreach (var task in tasks)
