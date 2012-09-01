@@ -168,12 +168,15 @@ namespace UtilityBelt.Versioning
         {
             if (version != null && version.Count >= 0)
             {
-                if (version.Any(part => String.IsNullOrWhiteSpace(part) || !part.All(Char.IsLetterOrDigit)))
+                if (version.Any(part => String.IsNullOrWhiteSpace(part) || !part.All(c => Char.IsLetterOrDigit(c) || c == '-')))
                 {
                     return false;
                 }
 
-                Contract.Assume(Contract.ForAll(version, str => !String.IsNullOrWhiteSpace(str) && Contract.ForAll(str, Char.IsLetterOrDigit)));
+                Contract.Assume(Contract.ForAll(version,
+                                                str =>
+                                                !String.IsNullOrWhiteSpace(str) &&
+                                                Contract.ForAll(str, c => Char.IsLetterOrDigit(c) || c == '-')));
             }
             return true;
         }

@@ -50,17 +50,17 @@ namespace UtilityBelt.Tests.Versioning
         [Test]
         public void ComplexVersionByStringDecompositionResultEqualsInput()
         {
-            const string preRelease = "alpha.2.abc";
-            const string build = "svn.12342";
+            const string preRelease = "alpha.2.abc.f-d";
+            const string build = "svn.a-4.12342";
 
             var version = new SemanticVersion(1, 2, 3, preRelease, build);
-            Assert.That(version.ToString(), Is.EqualTo("1.2.3-alpha.2.abc+svn.12342"));
+            Assert.That(version.ToString(), Is.EqualTo("1.2.3-alpha.2.abc.f-d+svn.a-4.12342"));
 
             version = new SemanticVersion(1, 2, 3, preRelease, null);
-            Assert.That(version.ToString(), Is.EqualTo("1.2.3-alpha.2.abc"));
+            Assert.That(version.ToString(), Is.EqualTo("1.2.3-alpha.2.abc.f-d"));
 
             version = new SemanticVersion(1, 2, 3, null, build);
-            Assert.That(version.ToString(), Is.EqualTo("1.2.3+svn.12342"));
+            Assert.That(version.ToString(), Is.EqualTo("1.2.3+svn.a-4.12342"));
         }
 
         /// <summary>
