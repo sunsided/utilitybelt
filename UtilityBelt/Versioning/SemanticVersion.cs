@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
+using UtilityBelt.Globalization;
 
 namespace UtilityBelt.Versioning
 {
@@ -29,12 +30,30 @@ namespace UtilityBelt.Versioning
         /// <summary>
         /// The pre-release version
         /// </summary>
-        public readonly IList<string> PreRelease;
+        public readonly IList<string> PreReleaseParts;
+
+        /// <summary>
+        /// The pre-release version
+        /// </summary>
+        public string PreRelease
+        {
+            [Pure]
+            get { return String.Join(".", PreReleaseParts); }
+        }
 
         /// <summary>
         /// The build version
         /// </summary>
-        public readonly IList<string> Build;
+        public readonly IList<string> BuildParts;
+
+        /// <summary>
+        /// The build version
+        /// </summary>
+        public string Build
+        {
+            [Pure]
+            get { return String.Join(".", BuildParts); }
+        }
 
         /// <summary>
         /// Determines if this version is a prerelease version
@@ -44,8 +63,8 @@ namespace UtilityBelt.Versioning
             [Pure]
             get
             {
-                Contract.Ensures(Contract.Result<bool>() == (PreRelease.Count > 0));
-                return PreRelease.Count > 0;
+                Contract.Ensures(Contract.Result<bool>() == (PreReleaseParts.Count > 0));
+                return PreReleaseParts.Count > 0;
             }
         }
 
@@ -57,8 +76,8 @@ namespace UtilityBelt.Versioning
             [Pure]
             get
             {
-                Contract.Ensures(Contract.Result<bool>() == (Build.Count > 0));
-                return Build.Count > 0;
+                Contract.Ensures(Contract.Result<bool>() == (BuildParts.Count > 0));
+                return BuildParts.Count > 0;
             }
         }
 
@@ -91,11 +110,11 @@ namespace UtilityBelt.Versioning
             Contract.Ensures(Contract.ValueAtReturn(out Major) == major);
             Contract.Ensures(Contract.ValueAtReturn(out Minor) == minor);
             Contract.Ensures(Contract.ValueAtReturn(out Patch) == patch);
-            Contract.Ensures(Contract.ValueAtReturn(out PreRelease).Count == 0);
-            Contract.Ensures(Contract.ValueAtReturn(out Build).Count == 0);
+            Contract.Ensures(Contract.ValueAtReturn(out PreReleaseParts).Count == 0);
+            Contract.Ensures(Contract.ValueAtReturn(out BuildParts).Count == 0);
 
-            Contract.Assume(PreRelease.Count == 0);
-            Contract.Assume(Build.Count == 0);
+            Contract.Assume(PreReleaseParts.Count == 0);
+            Contract.Assume(BuildParts.Count == 0);
         }
 
         /// <summary>
@@ -117,8 +136,8 @@ namespace UtilityBelt.Versioning
             Contract.Ensures(Contract.ValueAtReturn(out Major) == major);
             Contract.Ensures(Contract.ValueAtReturn(out Minor) == minor);
             Contract.Ensures(Contract.ValueAtReturn(out Patch) == patch);
-            Contract.Ensures(Contract.ValueAtReturn(out PreRelease) != null && Contract.ValueAtReturn(out PreRelease).IsReadOnly);
-            Contract.Ensures(Contract.ValueAtReturn(out Build) != null && Contract.ValueAtReturn(out Build).IsReadOnly);
+            Contract.Ensures(Contract.ValueAtReturn(out PreReleaseParts) != null && Contract.ValueAtReturn(out PreReleaseParts).IsReadOnly);
+            Contract.Ensures(Contract.ValueAtReturn(out BuildParts) != null && Contract.ValueAtReturn(out BuildParts).IsReadOnly);
         }
 
         /// <summary>
@@ -139,8 +158,8 @@ namespace UtilityBelt.Versioning
             Contract.Ensures(Contract.ValueAtReturn(out Major) == major);
             Contract.Ensures(Contract.ValueAtReturn(out Minor) == minor);
             Contract.Ensures(Contract.ValueAtReturn(out Patch) == patch);
-            Contract.Ensures(Contract.ValueAtReturn(out PreRelease) != null && Contract.ValueAtReturn(out PreRelease).IsReadOnly);
-            Contract.Ensures(Contract.ValueAtReturn(out Build) != null && Contract.ValueAtReturn(out Build).IsReadOnly);
+            Contract.Ensures(Contract.ValueAtReturn(out PreReleaseParts) != null && Contract.ValueAtReturn(out PreReleaseParts).IsReadOnly);
+            Contract.Ensures(Contract.ValueAtReturn(out BuildParts) != null && Contract.ValueAtReturn(out BuildParts).IsReadOnly);
 
             // check pre-release and build version
             if (!IsValidVersionString(preRelease)) throw new ArgumentException("Pre-release version contains an invalid part.");
@@ -149,13 +168,13 @@ namespace UtilityBelt.Versioning
             Major = major;
             Minor = minor;
             Patch = patch;
-            PreRelease = preRelease == null ? new string[0] : preRelease.ToArray();
-            Build = build == null ? new string[0] : build.ToArray();
+            PreReleaseParts = preRelease == null ? new string[0] : preRelease.ToArray();
+            BuildParts = build == null ? new string[0] : build.ToArray();
 
-            Contract.Assume(preRelease != null && PreRelease.Count == preRelease.Count || PreRelease.Count == 0);
-            Contract.Assume(build != null && Build.Count == build.Count || Build.Count == 0);
-            Contract.Assume(PreRelease.IsReadOnly);
-            Contract.Assume(Build.IsReadOnly);
+            Contract.Assume(preRelease != null && PreReleaseParts.Count == preRelease.Count || PreReleaseParts.Count == 0);
+            Contract.Assume(build != null && BuildParts.Count == build.Count || BuildParts.Count == 0);
+            Contract.Assume(PreReleaseParts.IsReadOnly);
+            Contract.Assume(BuildParts.IsReadOnly);
         }
 
         /// <summary>
@@ -191,8 +210,8 @@ namespace UtilityBelt.Versioning
             Contract.Ensures(Contract.Result<SemanticVersion>().Major == Major+1);
             Contract.Ensures(Contract.Result<SemanticVersion>().Minor == 0);
             Contract.Ensures(Contract.Result<SemanticVersion>().Patch == 0);
-            Contract.Ensures(Contract.Result<SemanticVersion>().PreRelease.Count == 0);
-            Contract.Ensures(Contract.Result<SemanticVersion>().Build.Count == 0);
+            Contract.Ensures(Contract.Result<SemanticVersion>().PreReleaseParts.Count == 0);
+            Contract.Ensures(Contract.Result<SemanticVersion>().BuildParts.Count == 0);
 
             return new SemanticVersion(Major + 1, 0, 0);
         }
@@ -207,8 +226,8 @@ namespace UtilityBelt.Versioning
             Contract.Ensures(Contract.Result<SemanticVersion>().Major == Major);
             Contract.Ensures(Contract.Result<SemanticVersion>().Minor == Minor + 1);
             Contract.Ensures(Contract.Result<SemanticVersion>().Patch == 0);
-            Contract.Ensures(Contract.Result<SemanticVersion>().PreRelease.Count == 0);
-            Contract.Ensures(Contract.Result<SemanticVersion>().Build.Count == 0);
+            Contract.Ensures(Contract.Result<SemanticVersion>().PreReleaseParts.Count == 0);
+            Contract.Ensures(Contract.Result<SemanticVersion>().BuildParts.Count == 0);
 
             return new SemanticVersion(Major, Minor + 1, 0);
         }
@@ -241,7 +260,15 @@ namespace UtilityBelt.Versioning
         /// <param name="other">An object to compare with this object.</param>
         public int CompareTo(SemanticVersion other)
         {
-            throw new NotImplementedException();
+            int result = Major.CompareTo(other.Major);
+            if (result == 0) result = Minor.CompareTo(other.Minor);
+            if (result == 0) result = Patch.CompareTo(other.Patch);
+            if (result == 0 && IsPrerelease) result = -1;
+
+            var comparer = new NaturalStringComparer();
+            if (result == 0) result = comparer.Compare(PreRelease, other.PreRelease);
+            if (result == 0) result = comparer.Compare(Build, other.Build);
+            return result;
         }
 
         /// <summary>
@@ -253,7 +280,11 @@ namespace UtilityBelt.Versioning
         /// <param name="other">An object to compare with this object.</param>
         public int CompareTo(Version other)
         {
-            throw new NotImplementedException();
+            int result = Major.CompareTo(other.Major);
+            if (result == 0) result = Minor.CompareTo(other.Minor);
+            if (result == 0) result = Patch.CompareTo(other.Build);
+            if (result == 0) result = Build.CompareTo(other.Revision);
+            return result;
         }
 
         /// <summary>
@@ -268,11 +299,11 @@ namespace UtilityBelt.Versioning
             builder.AppendFormat("{0}.{1}.{2}", Major, Minor, Patch);
             if (IsPrerelease)
             {
-                builder.Append("-" + String.Join(".", PreRelease));
+                builder.Append("-" + String.Join(".", PreReleaseParts));
             }
             if (HasBuildVersion)
             {
-                builder.Append("+" + String.Join(".", Build));
+                builder.Append("+" + String.Join(".", BuildParts));
             }
             return builder.ToString();
         }
@@ -312,6 +343,8 @@ namespace UtilityBelt.Versioning
             Contract.Invariant(Major >= 0);
             Contract.Invariant(Minor >= 0);
             Contract.Invariant(Patch >= 0);
+            Contract.Invariant(PreReleaseParts != null);
+            Contract.Invariant(Build != null);
         }
     }
 }
